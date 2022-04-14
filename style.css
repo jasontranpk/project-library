@@ -26,6 +26,7 @@
 .book{
     border: 1px solid black;
     padding: 20px;
+    position: relative;
 }
 .btn{
     padding: 10px 15px;
@@ -115,4 +116,12 @@
   }
   .removeBtn{
     display: block;
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    border: none;
+    background-color: white;
+    color: black;
+    font-size: 1.1em;
   }
+  

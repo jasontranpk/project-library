@@ -37,11 +37,6 @@ function loadLibrary (){
         removeBtn.type = 'button';
         removeBtn.className = 'removeBtn';
         removeBtn.setAttribute('data-bookId', index )
-        const readBtn = document.createElement("input");
-        readBtn.value = 'o';
-        readBtn.type = 'button';
-        //readBtn.className = 'readBtn';
-        readBtn.setAttribute('data-bookId', index )
         title.textContent = book.title;
         author.textContent = book.author;
         pages.textContent = book.pages;
@@ -62,8 +57,6 @@ function loadLibrary (){
         bookDiv.appendChild(readCheck);
         bookDiv.appendChild(read);
         bookDiv.appendChild(removeBtn);
-
-        bookDiv.appendChild(readBtn);
         gallery[0].appendChild(bookDiv);
     });
     addEventRemoveBook();
