@@ -94,10 +94,22 @@
     color: white;
   }
   
-  .modal-body {padding: 2px 16px;}
+  .modal-body {padding: 10px 16px;}
   
   .modal-footer {
     padding: 2px 16px;
     background-color: #5cb85c;
     color: white;
+  }
+  label {
+    display: inline-block;
+    width: 150px;
+    text-align: right;
+    margin-bottom: 15px;
+  }
+  .submitBtn{
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 10px 15px;
   }

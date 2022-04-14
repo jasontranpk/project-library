@@ -21,26 +21,36 @@ addBookToLibrary(toKillAMockingbird);
 addBookToLibrary(slaughterHouse);
 
 const gallery = document.getElementsByClassName('gallery');
-(myLibrary).forEach(book => {
-    //alert(book.title);
-    const bookDiv = document.createElement("div");
-    bookDiv.className = "book";
-    const title = document.createElement("h3");
-    const author = document.createElement("p");
-    const pages = document.createElement("p");
-    const read = document.createElement("p");
-    title.textContent = book.title;
-    author.textContent = book.author;
-    pages.textContent = book.pages;
-    read.textContent = book.read?'Read':'Not Read';
-    bookDiv.appendChild(title);
-    bookDiv.appendChild(author);
-    bookDiv.appendChild(pages);
-    bookDiv.appendChild(read);
-    gallery[0].appendChild(bookDiv);
+function loadLibrary (){
+    gallery[0].innerHTML = '';
+    (myLibrary).forEach( (book,index) => {
+        //alert(book.title);
+        const bookDiv = document.createElement("div");
+        bookDiv.className = "book";
+        const title = document.createElement("h3");
+        const author = document.createElement("p");
+        const pages = document.createElement("p");
+        const read = document.createElement("p");
+        const removeBtn = document.createElement("input");
+        removeBtn.value = 'x';
+        removeBtn.type = 'button';
+        removeBtn.className = 'removeBtn';
+        removeBtn.setAttribute('data-bookId', index )
+        title.textContent = book.title;
+        author.textContent = book.author;
+        pages.textContent = book.pages;
+        read.textContent = book.read?'Read':'Not Read';
+        bookDiv.appendChild(title);
+        bookDiv.appendChild(author);
+        bookDiv.appendChild(pages);
+        bookDiv.appendChild(read);
+        bookDiv.appendChild(removeBtn);
+        gallery[0].appendChild(bookDiv);
+    
+    });
+}
 
-});
-
+loadLibrary();
 
 // Get the modal
 const modal = document.getElementById("myModal");
@@ -62,8 +72,21 @@ span.onclick = function() {
 }
 
 // When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
+window.onclick = (event) => {
   if (event.target == modal) {
     modal.style.display = "none";
   }
+}
+
+const submitBtn = document.getElementById('submit');
+
+submitBtn.onclick = ()=>{
+    title =  document.getElementById('title');
+    author =  document.getElementById('author');
+    pages =  document.getElementById('pages');
+    read =  document.getElementById('read');
+    bookTemp = new Book(title.value, author.value, pages.value, read.value);
+    console.log(bookTemp);
+    addBookToLibrary(bookTemp);
+    loadLibrary();
 }
