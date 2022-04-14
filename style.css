@@ -113,3 +113,6 @@
       margin-right: auto;
       padding: 10px 15px;
   }
+  .removeBtn{
+    display: block;
+  }

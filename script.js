@@ -31,53 +31,66 @@ function loadLibrary (){
         const author = document.createElement("p");
         const pages = document.createElement("p");
         const read = document.createElement("p");
+        read.style.display = 'inline';
         const removeBtn = document.createElement("input");
         removeBtn.value = 'x';
         removeBtn.type = 'button';
         removeBtn.className = 'removeBtn';
         removeBtn.setAttribute('data-bookId', index )
+        const readBtn = document.createElement("input");
+        readBtn.value = 'o';
+        readBtn.type = 'button';
+        //readBtn.className = 'readBtn';
+        readBtn.setAttribute('data-bookId', index )
         title.textContent = book.title;
         author.textContent = book.author;
         pages.textContent = book.pages;
+        const readCheck = document.createElement('input');
+        readCheck.type = 'checkbox';
+        readCheck.setAttribute('data-bookId', index )
+        readCheck.className = 'readBtn';
+        if(book.read){
+          readCheck.checked= true;
+        }
+        else{
+          readCheck.checked = false;
+        }
         read.textContent = book.read?'Read':'Not Read';
         bookDiv.appendChild(title);
         bookDiv.appendChild(author);
         bookDiv.appendChild(pages);
+        bookDiv.appendChild(readCheck);
         bookDiv.appendChild(read);
         bookDiv.appendChild(removeBtn);
+
+        bookDiv.appendChild(readBtn);
         gallery[0].appendChild(bookDiv);
-    
     });
+    addEventRemoveBook();
+    addEventReadBook();
 }
 
 loadLibrary();
 
-// Get the modal
+/*MODAL*/
 const modal = document.getElementById("myModal");
-
-// Get the button that opens the modal
 const btn = document.getElementById("myBtn");
-
-// Get the <span> element that closes the modal
 const span = document.getElementsByClassName("close")[0];
 
-// When the user clicks on the button, open the modal
 btn.onclick = function() {
   modal.style.display = "block";
 }
 
-// When the user clicks on <span> (x), close the modal
 span.onclick = function() {
   modal.style.display = "none";
 }
 
-// When the user clicks anywhere outside of the modal, close it
 window.onclick = (event) => {
   if (event.target == modal) {
     modal.style.display = "none";
   }
 }
-
+/*MODAL*/
 const submitBtn = document.getElementById('submit');
 
 submitBtn.onclick = ()=>{
@@ -89,4 +102,30 @@ submitBtn.onclick = ()=>{
     console.log(bookTemp);
     addBookToLibrary(bookTemp);
     loadLibrary();
+}
+//Add event listener to each remove button
+function addEventRemoveBook(){
+  const removeBtns = Array.from(document.getElementsByClassName('removeBtn'));
+  removeBtns.forEach( (btn) => {
+    btn.addEventListener('click', (e) =>{
+      //alert(e.target.getAttribute('data-bookId'));
+      let bookId = e.target.getAttribute('data-bookId');
+      myLibrary.splice(bookId,1);
+      loadLibrary();
+    })
+  }) 
+}
+function addEventReadBook(){
+  const readBtns = Array.from(document.getElementsByClassName('readBtn'));
+  readBtns.forEach( (btn) => {
+    btn.addEventListener('click', (e) =>{
+      //alert(e.target.getAttribute('data-bookId'));
+      let bookId = e.target.getAttribute('data-bookId');
+      if(myLibrary[bookId].read)
+        myLibrary[bookId].read = false;
+      else
+        myLibrary[bookId].read = true;
+      loadLibrary();
+    })
+  }) 
 }
