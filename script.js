@@ -86,15 +86,37 @@ window.onclick = (event) => {
 /*MODAL*/
 const submitBtn = document.getElementById('submit');
 
-submitBtn.onclick = ()=>{
+submitBtn.onclick = (e)=>{
+    e.preventDefault();
     title =  document.getElementById('title');
     author =  document.getElementById('author');
     pages =  document.getElementById('pages');
     read =  document.getElementById('read');
-    bookTemp = new Book(title.value, author.value, pages.value, read.value);
-    console.log(bookTemp);
-    addBookToLibrary(bookTemp);
-    loadLibrary();
+    addForm =  document.getElementById('add-form');
+    title.addEventListener('input', e => {
+      title.checkValidity();
+      title.reportValidity();
+      
+    })
+    author.addEventListener('input', e => {
+      author.checkValidity();
+      author.reportValidity();
+      
+    })
+    pages.addEventListener('input', e => {
+      pages.checkValidity();
+      pages.reportValidity();
+      
+    })
+    addForm.checkValidity()
+    addForm.reportValidity();
+    if(addForm.checkValidity()){
+      bookTemp = new Book(title.value, author.value, pages.value, read.value);
+      console.log(bookTemp);
+      addBookToLibrary(bookTemp);
+      loadLibrary();
+      modal.style.display = "none";
+    }
 }
 //Add event listener to each remove button
 function addEventRemoveBook(){
@@ -123,4 +145,4 @@ function addEventReadBook(){
   }) 
 }
 
-//JS validation
+

@@ -135,6 +135,7 @@
 }
 
 label {
+  margin-top: 10px;
   margin-bottom: 10px;
 }
 
@@ -162,11 +163,22 @@ label {
   align-items: center;
 }
 #add-form input{
-  width: 200px;
+  width: 70%;
 }
-.ratio{
-  display: inline;
+.radio{
+  display: flex;
+  justify-content: center;
+  align-self: center;
 }
-.ratio input{
-  display: inline;
+.radio p{
+  display: flex;
+  width: 70px;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.radio label{
+  margin-right: 20px;
+}
+.radio input{
 }
