@@ -1,34 +1,50 @@
 import './style.css';
-// Import the functions you need from the SDKs you need
-import { initializeApp } from 'firebase/app';
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import SetUpData from './SetUpData';
+import {
+	doc,
+	setDoc,
+	collection,
+	getDocs,
+	deleteDoc,
+} from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore/lite';
+import app from './app';
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-	apiKey: 'AIzaSyACs4Qq9s-y0gx92wMrifyIzVPfsvMkNa8',
-	authDomain: 'small-projects-f3743.firebaseapp.com',
-	projectId: 'small-projects-f3743',
-	storageBucket: 'small-projects-f3743.appspot.com',
-	messagingSenderId: '639093176179',
-	appId: '1:639093176179:web:e2975c162c2d4843c67706',
-};
+SetUpData();
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 let myLibrary = [];
 
-function Book(title, author, pages, read) {
+function Book(title, author, pages, read, id) {
+	this.id = id;
 	this.title = title;
 	this.author = author;
 	this.pages = pages;
 	this.read = read;
 }
+
+const querySnapshot = await getDocs(collection(db, 'myLibrary'));
+const queryArr = [];
+querySnapshot.forEach((doc) => {
+	// doc.data() is never undefined for query doc snapshots
+	console.log(doc.id, ' => ', doc.data());
+	let data = doc.data();
+	console.log(data);
+	let book = new Book(
+		data.title,
+		data.author,
+		data.pages,
+		data.read,
+		data.id
+	);
+	addBookToLibrary(book);
+});
+console.log(queryArr);
 function addBookToLibrary(book) {
 	myLibrary.push(book);
 }
-let harryPorter1 = new Book('Harry Porter Vol 1', 'J.K Rowling', 1200, true);
+/* let harryPorter1 = new Book('Harry Porter Vol 1', 'J.K Rowling', 1200, true);
 let lordOfTheRings = new Book(
 	'Lord Of The Rings',
 	'J. R. R. Tolkien',
@@ -52,15 +68,11 @@ addBookToLibrary(harryPorter1);
 addBookToLibrary(lordOfTheRings);
 addBookToLibrary(theKiteRunner);
 addBookToLibrary(toKillAMockingbird);
-addBookToLibrary(slaughterHouse);
-
+addBookToLibrary(slaughterHouse); */
 const gallery = document.querySelector('.gallery');
-console.log(gallery);
-
 function loadLibrary() {
 	gallery.innerHTML = '';
 	myLibrary.forEach((book, index) => {
-		//alert(book.title);
 		const bookDiv = document.createElement('div');
 		bookDiv.className = 'book';
 		const title = document.createElement('h3');
@@ -72,7 +84,7 @@ function loadLibrary() {
 		removeBtn.value = 'x';
 		removeBtn.type = 'button';
 		removeBtn.className = 'removeBtn';
-		removeBtn.setAttribute('data-bookId', index);
+		removeBtn.setAttribute('data-bookId', book.id);
 		title.textContent = book.title;
 		author.textContent = book.author;
 		pages.textContent = book.pages;
@@ -142,19 +154,34 @@ submitBtn.onclick = (e) => {
 	});
 	addForm.checkValidity();
 	addForm.reportValidity();
+	const id = 'B' + (myLibrary.length + 1);
 	if (addForm.checkValidity()) {
 		const bookTemp = new Book(
 			title.value,
 			author.value,
 			pages.value,
-			read.value
+			read.value,
+			id
 		);
-		console.log(bookTemp);
 		addBookToLibrary(bookTemp);
+		addBookFirebase(bookTemp);
 		loadLibrary();
 		modal.style.display = 'none';
 	}
 };
+async function addBookFirebase(book) {
+	await setDoc(doc(db, 'myLibrary', book.id), {
+		title: book.title,
+		author: book.author,
+		pages: book.pages,
+		read: book.read,
+		id: book.id,
+	});
+}
+async function deleteBookFirebase(bookId) {
+	console.log(bookId);
+	await deleteDoc(doc(db, 'myLibrary', bookId));
+}
 //Add event listener to each remove button
 function addEventRemoveBook() {
 	const removeBtns = Array.from(document.getElementsByClassName('removeBtn'));
@@ -162,7 +189,9 @@ function addEventRemoveBook() {
 		btn.addEventListener('click', (e) => {
 			//alert(e.target.getAttribute('data-bookId'));
 			let bookId = e.target.getAttribute('data-bookId');
-			myLibrary.splice(bookId, 1);
+			const index = myLibrary.findIndex((book) => book.id === bookId);
+			myLibrary.splice(index, 1);
+			deleteBookFirebase(bookId);
 			loadLibrary();
 		});
 	});
